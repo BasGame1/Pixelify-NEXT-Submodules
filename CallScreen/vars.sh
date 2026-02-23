@@ -1,0 +1,13 @@
+ISO=us,
+MCC=331
+MNC=480
+MCCMNC=331480
+OPERATOR=Verizon
+COUNTRY=US
+TZ=America/New_York
+DIALER=com.google.android.dialer
+DIALER_PATH=/system/product/priv-app/GoogleDialer
+DIALER_APK=$DIALER_PATH/GoogleDialer.apk
+AICORE=com.google.android.aicore
+AICORE_PATH=/system/product/priv-app/AICorePrebuilt-aicore_20250130.00_RC01
+AICORE_APK=$AICORE_PATH/AICorePrebuilt-aicore_20250130.00_RC01.apk
