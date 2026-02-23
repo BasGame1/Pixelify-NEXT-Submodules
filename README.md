@@ -2,7 +2,7 @@
 
 Collection of the Pixelify Next Submodules
 
-#IN DEVELOPMENT
+# IN DEVELOPMENT
 
 You can check for updates on our telegram group or channel!
 - Group Chat (https://t.me/PixelifyNext)
