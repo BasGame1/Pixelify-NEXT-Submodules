@@ -1,0 +1,6 @@
+id=installAPK
+name=Universal Install APK script
+author=BasGame1
+description=Call this script with the path /data/adb/modules/installAPK/installAPK.sh to install any apk!
+version=1
+versioncode=01
