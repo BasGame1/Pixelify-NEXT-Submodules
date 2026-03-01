@@ -1,41 +1,75 @@
+import org.apache.tools.ant.filters.FixCrLfFilter
+import org.apache.tools.ant.filters.ReplaceTokens
+import org.gradle.api.file.DuplicatesStrategy
 
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-       classpath 'com.android.tools.build:gradle:8.0.0'
-    }
-}
+import java.security.MessageDigest
 
 plugins {
-    id 'idea'
+    id 'com.android.library'
 }
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
+def modProp = file("$rootDir/GPhotos/module/module.prop")
+def versionLine = modProp.readLines().find { it.startsWith('version=') }
+def version = versionLine.split('=')[1]
+def zipName = "PixelifyGPhotos-v${version}.zip"
+def gpPath  = "$rootDir/GPhotos/module"
+def gpOutPath = "$rootDir/GPhotos/out"
+def types = [Instance1: 'arm64-v8a', Instance2: 'armeabi-v7a']
+def moduleLibraryName = "pixelify-next-gphotos"
+def buildArm64Path = "$rootDir/GPhotos/build/intermediates/stripped_native_libs/release/stripReleaseDebugSymbols/out/lib/arm64-v8a"
+def buildArm32Path = "$rootDir/GPhotos/build/intermediates/stripped_native_libs/release/stripReleaseDebugSymbols/out/lib/armeabi-v7a"
+
+
+android {
+    namespace 'com.pixelify.next.gphotos.zygisk'
+    compileSdk target_sdk
+    defaultConfig {
+        minSdk min_sdk
+        targetSdk target_sdk
+        externalNativeBuild {
+            cmake {
+                arguments "-DMODULE_NAME:STRING=$moduleLibraryName";
+            }
+        }
+        ndk {
+          abiFilters "arm64-v8a", "armeabi-v7a"
+        }
+    }
+    buildFeatures {
+        prefab false
+    }
+    externalNativeBuild {
+        cmake {
+            path "src/main/cpp/CMakeLists.txt"
+        }
     }
 }
-
-idea.module {
-    excludeDirs += file('out')
-    resourceDirs += file('template')
-    resourceDirs += file('scripts')
+tasks.register('copyArm64Lib', Sync) {
+    from buildArm64Path
+    into "$gpOutPath/module_release/lib/arm64-v8a"
+    include "*.so"
+}
+tasks.register('copyArm32Lib', Sync) {
+    from buildArm32Path
+    into "$gpOutPath/module_release/lib/armeabi-v7a"
+    include "*.so"
+}
+tasks.register('copyModule', Sync) {
+    from "$gpPath"
+    into "$gpOutPath/module_release"
+    include "**/*"
+}
+tasks.register('cleanBuildDirs', Delete) {
+    delete "$rootDir/GPhotos/build"
+    delete "$rootDir/GPhotos/.cxx"
+}
+tasks.register('buildZip', Zip) {
+    dependsOn 'copyArm64Lib'
+    dependsOn 'copyArm32Lib'
+    dependsOn 'copyModule'
+    dependsOn 'cleanBuildDirs'
+    archiveFileName = zipName
+    from "$gpOutPath/module_release"
+    destinationDirectory = file("$gpOutPath")
 }
 
-ext {
-    min_sdk = 23
-    target_sdk = 33
-    minSdkVersion = 23
-    targetSdkVersion = 34
-    buildToolsVersion = '30.0.3'
-    ndkVersion = '21.4.7075529'
-    outDir = file("$rootDir/out")
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir, outDir
-}

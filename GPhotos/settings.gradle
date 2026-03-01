@@ -1,5 +1,0 @@
-import org.apache.tools.ant.DirectoryScanner
-
-DirectoryScanner.removeDefaultExclude('**/.gitattributes')
-
-include ':zygisk'
