@@ -1,0 +1,16 @@
+def plPath = "$rootDir/PixelLauncher/module"
+def plOutPath = "$rootDir/PixelLauncher/out"
+def modProp = file("$plPath/module.prop")
+def versionLine = modProp.readLines().find { it.startsWith('version=') }
+def version = versionLine.split('=')[1]
+
+tasks.register('buildPixelLauncher', Exec) {
+    commandLine 'mkdir', '-p', "$plOutPath"
+}
+
+tasks.register('buildZip', Zip) {
+ dependsOn 'buildPixelLauncher'
+ archiveFileName = "PixelLauncher-v${version}.zip"
+ from plPath
+ destinationDirectory = file("$plOutPath")
+}

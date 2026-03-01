@@ -1,2 +1,0 @@
-unzip -o $MODPATH/system/product/priv-app/DevicePersonalizationPrebuiltPixel2023-playstore_aiai_20250306.00_RC10/DevicePersonalizationPrebuiltPixel2023-playstore_aiai_20250306.00_RC10.zip -d $MODPATH/system/product/priv-app/DevicePersonalizationPrebuiltPixel2023-playstore_aiai_20250306.00_RC10
-rm -rf $MODPATH/system/product/priv-app/DevicePersonalizationPrebuiltPixel2023-playstore_aiai_20250306.00_RC10/DevicePersonalizationPrebuiltPixel2023-playstore_aiai_20250306.00_RC10.zip
