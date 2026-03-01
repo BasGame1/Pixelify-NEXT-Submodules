@@ -1,0 +1,16 @@
+def szPath = "$rootDir/Systemazer/module"
+def szOutPath = "$rootDir/Systemazer/out"
+def modProp = file("$szPath/module.prop")
+def versionLine = modProp.readLines().find { it.startsWith('version=') }
+def version = versionLine.split('=')[1]
+
+tasks.register('buildSystemazer', Exec) {   
+    commandLine 'mkdir', '-p', "$szOutPath"
+}
+
+tasks.register('buildZip', Zip) {
+ dependsOn 'buildSystemazer'
+ archiveFileName = "Systemazer-v${version}.zip"
+ from szPath
+ destinationDirectory = file("$szOutPath")
+}
