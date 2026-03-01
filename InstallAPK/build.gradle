@@ -1,0 +1,17 @@
+def iaPath = "$rootDir/InstallAPK/module"
+def iaOutPath = "$rootDir/InstallAPK/out"
+def modProp = file("$iaPath/module.prop")
+def versionLine = modProp.readLines().find { it.startsWith('version=') }
+def version = versionLine.split('=')[1]
+
+tasks.register('buildInstallAPK', Exec) {
+    commandLine 'mkdir', '-p', "$iaOutPath"
+}
+
+tasks.register('buildZip', Zip) {
+ dependsOn 'buildInstallAPK'
+ archiveFileName = "InstallAPK-v${version}.zip"
+ from iaPath
+ destinationDirectory = file("$iaOutPath")
+}
+
