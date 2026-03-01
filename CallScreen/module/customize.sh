@@ -36,3 +36,4 @@ else
 		echo "Aicore found, deleting stub"
 		rm -rf $MODPATH/$AICORE_APK
 	fi
+fi
