@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PIXELIFY NEXT MONITOR</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-image: url(background.png);
+            max-width: 100%;
+            height: auto;
+            color: white;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            margin-top: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: 'Google Sans', Roboto, sans-serif;
+        }
+
+        .root_container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0.9;
+            background-color: antiquewhite;
+            padding: 40px;
+            margin: 20px;
+            border-radius: 12px;
+            width: 85%;
+            max-width: 500px;
+        }
+
+        .title {
+            text-align: center;
+            background-position: center;
+            background-size: cover;
+            background-image: url(banner.png);
+            height: 100px;
+            width: 90%;
+            margin-bottom: 20px;
+            border-radius: 20px;
+        }
+
+        .log-console {
+            background-color: black;
+            color: #00ff00;
+            border-radius: 12px;
+            padding: 20px;
+            font-size: 10px;
+            width: 100%;
+            height: 120px;
+            overflow-y: auto;
+            font-family: monospace;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+        }
+
+        .text-console {
+            color: black;
+            font-weight: bold;
+            margin-bottom: 10px;
+            align-self: flex-start;
+        }
+
+        /* Fixed the dot selector */
+        .status-card {
+            margin-top: 10px;
+            background-color: white;
+            color: black;
+            border-radius: 12px;
+            padding: 15px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+            font-weight: 500;
+        }
+
+        .status-dot {
+            height: 12px;
+            width: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            background-color: #ccc;
+        }
+
+        .refresh-btn {
+            margin-top: 20px;
+            padding: 12px 24px;
+            background-color: #4285F4;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .refresh-btn:active {
+            transform: scale(0.98);
+        }
+
+        .status-dot.checking {
+            animation: blink 0.8s infinite;
+            background-color: #FFC107;
+        }
+
+        @keyframes blink {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        footer {
+            margin-top: 50px;
+            font-size: 14px;
+            color: black;
+            background-color: white;
+            padding: 10px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="title"></div>
+    <div class="root_container">
+        <div class="text-console">Log Console</div>
+        <div class="log-console" id="log-console">INITIALIZING...</div>
+
+        <div id="status-panel" style="width: 100%;">
+            <div class="status-card">
+                <span>Zygisk Injection</span>
+                <div id="dot-zygisk" class="status-dot"></div>
+            </div>
+
+            <div class="status-card">
+                <span>Spoofing Engine</span>
+                <div id="dot-spoof" class="status-dot"></div>
+            </div>
+
+            <div class="status-card">
+                <span>Unlimited Storage</span>
+                <div id="dot-storage" class="status-dot"></div>
+            </div>
+
+            <div class="status-card">
+                <span id="photos-version-text">Photos Version</span>
+                <div id="dot-photos" class="status-dot"></div>
+            </div>
+
+            <button class="refresh-btn" onclick="forceRefresh()">Force Stop & Verify</button>
+        </div>
+    </div>
+
+    <script>
+        const MODULE_ID = "PixelifyNext";
+        const TARGET_PKG = "com.google.android.apps.photos";
+
+        async function execShell(command) {
+            try {
+                if (typeof ksu !== 'undefined' && ksu.exec) {
+                    let result = await ksu.exec(command);
+                    return result ? result.trim() : "";
+                } else if (typeof mmrl !== 'undefined' && mmrl.exec) {
+                    let result = await mmrl.exec(command);
+                    return result ? result.trim() : "";
+                }
+                return "ERROR_NO_API";
+            } catch (e) {
+                return "ERROR_EXEC";
+            }
+        }
+
+        async function forceRefresh() {
+            const consoleDiv = document.getElementById('log-console');
+            consoleDiv.innerText = "Killing Google Photos...\nWaiting for restart...";
+            await execShell(`am force-stop ${TARGET_PKG}`);
+            setTimeout(() => { refreshDashboard(); }, 1500);
+        }
+
+        async function refreshDashboard() {
+            const consoleDiv = document.getElementById('log-console');
+            const storageDot = document.getElementById('dot-storage');
+            let logs = [];
+
+            let testRoot = await execShell("id -u");
+            if (testRoot === "ERROR_NO_API") {
+                consoleDiv.innerText = "Critical Error: API Not Found.";
+                return;
+            }
+            logs.push("[OK] Root API Connected");
+
+            let modCheck = await execShell(`[ -d "/data/adb/modules/${MODULE_ID}" ] && echo "YES" || echo "NO"`);
+            updateStatus('dot-zygisk', modCheck === "YES");
+
+            let pid = await execShell(`pidof ${TARGET_PKG}`);
+            if (!pid) {
+                updateStatus('dot-spoof', 'warn');
+                logs.push("[!] Photos closed. Open it to verify.");
+            } else {
+                let maps = await execShell(`grep "${MODULE_ID}" /proc/${pid}/maps`);
+                let spoofedProp = await execShell("getprop ro.product.model");
+                if (maps.length > 0 || spoofedProp.toLowerCase().includes("pixel")) {
+                    updateStatus('dot-spoof', true);
+                    logs.push(`[OK] Injected in PID: ${pid}`);
+                } else {
+                    updateStatus('dot-spoof', false);
+                    logs.push("[ERR] No injection found.");
+                }
+            }
+
+            storageDot.classList.add('checking');
+            let storageCheck = await execShell("pm list features | grep com.google.android.feature.PIXEL_2016_EXPERIENCE");
+            updateStatus('dot-storage', storageCheck.includes("2016_EXPERIENCE"));
+            storageDot.classList.remove('checking');
+
+            let resPhotos = await execShell(`dumpsys package ${TARGET_PKG} | grep versionName | head -n 1 | cut -d'=' -f2`);
+            if (resPhotos) {
+                document.getElementById('photos-version-text').innerText = "Photos: " + resPhotos;
+                updateStatus('dot-photos', true);
+            }
+
+            consoleDiv.innerText = logs.join("\n");
+        }
+
+        function updateStatus(dotId, state) {
+            const dotElem = document.getElementById(dotId);
+            if (!dotElem) return;
+            if (state === true) dotElem.style.backgroundColor = "#4CAF50";
+            else if (state === 'warn') dotElem.style.backgroundColor = "#FFC107";
+            else dotElem.style.backgroundColor = "#F44336";
+        }
+
+        refreshDashboard();
+    </script>
+
+    <footer>By the PixelifyNEXT project</footer>
+</body>
+
+</html>
