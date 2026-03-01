@@ -1,0 +1,17 @@
+def csPath = "$rootDir/CallScreen/module"
+def csOutPath = "$rootDir/CallScreen/out"
+def modProp = file("$csPath/module.prop")
+def versionLine = modProp.readLines().find { it.startsWith('version=') }
+def version = versionLine.split('=')[1]
+
+tasks.register('buildCallScreen', Exec) {
+    commandLine 'mkdir', '-p', "$csOutPath"
+}
+
+tasks.register('buildZip', Zip) {
+ dependsOn 'buildCallScreen'
+ archiveFileName = "CallScreen-v${version}.zip"
+ from csPath
+ destinationDirectory = file("$csOutPath")
+}
+
