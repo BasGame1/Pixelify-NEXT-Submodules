@@ -1,0 +1,17 @@
+def csPath = "$rootDir/Gemini_bootanimation/module"
+def csOutPath = "$rootDir/Gemini_bootanimation/out"
+def modProp = file("$csPath/module.prop")
+def versionLine = modProp.readLines().find { it.startsWith('version=') }
+def version = versionLine.split('=')[1]
+
+tasks.register('buildGemini_bootanimation', Exec) {
+    commandLine 'mkdir', '-p', "$csOutPath"
+}
+
+tasks.register('buildZip', Zip) {
+ dependsOn 'buildGemini_bootanimation'
+ archiveFileName = "Gemini_bootanimation-v${version}.zip"
+ from csPath
+ destinationDirectory = file("$csOutPath")
+}
+
