@@ -44,7 +44,7 @@ ext {
 }
 
 tasks.register('clean', Delete) {
-    delete outGPhotosDir, "$rootDir/PixelLauncher/out", "$rootDir/CallScreen/out", "$rootDir/InstallAPK/out", "$rootDir/Systemazer/out", "$rootDir/GPhotos/out", "$rootDir/Bootanimation/out", "$rootDir/Gemini_bootanimation/out"
+    delete outGPhotosDir, "$rootDir/PixelLauncher/out", "$rootDir/CallScreen/out", "$rootDir/InstallAPK/out", "$rootDir/Systemazer/out", "$rootDir/GPhotos/out", "$rootDir/bootanimation/out", "$rootDir/Gemini_bootanimation/out"
 }
 tasks.register('cleanOut', Delete) {
     delete outDir
