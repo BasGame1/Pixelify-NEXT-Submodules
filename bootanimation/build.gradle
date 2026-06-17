@@ -1,0 +1,17 @@
+def csPath = "$rootDir/bootanimation/module"
+def csOutPath = "$rootDir/bootanimation/out"
+def modProp = file("$csPath/module.prop")
+def versionLine = modProp.readLines().find { it.startsWith('version=') }
+def version = versionLine.split('=')[1]
+
+tasks.register('buildBootanimation', Exec) {
+    commandLine 'mkdir', '-p', "$csOutPath"
+}
+
+tasks.register('buildZip', Zip) {
+ dependsOn 'buildBootanimation'
+ archiveFileName = "Bootanimation-v${version}.zip"
+ from csPath
+ destinationDirectory = file("$csOutPath")
+}
+
