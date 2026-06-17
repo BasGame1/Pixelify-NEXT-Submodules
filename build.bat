@@ -11,6 +11,8 @@ call colors.bat blue "GPhotos: 2"
 call colors.bat yellow "InstallAPK: 3"
 call colors.bat green "PixelLauncher: 4"
 call colors.bat purple "Systemazer: 5"
+call colors.bat red "Bootanimation: 6"
+call colors.bat blue "Gemini Bootaniamtion: 7"
 echo All: press enter
 echo.
 
@@ -31,11 +33,17 @@ if "%SELECTION%"=="1" (
 ) else if "%SELECTION%"=="5" (
     call colors.bat purple "Building Systemazer"
     call gradlew :Systemazer:buildZip --no-configuration-cache
+) else if "%SELECTION%"=="6" (
+    call colors.bat red "Building Bootanimation"
+    call gradlew :Bootanimation:buildZip --no-configuration-cache
+) else if "%SELECTION%"=="7" (
+    call colors.bat blue "Building Gemini bootanimatiom"
+    call gradlew :Gemini_bootanimation:buildZip --no-configuration-cache
 ) else (
     echo Building everything
     call gradlew buildAll --no-configuration-cache
     echo Cleaning
     call gradlew clean --no-configuration-cache
 )
-
+call colors.bat green "Done!"
 pause
