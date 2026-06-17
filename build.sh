@@ -8,6 +8,8 @@ blue "GPhotos: 2"
 yellow "InstallAPK: 3"
 green "PixelLauncher: 4"
 purple "Systemazer: 5"
+red "Bootanimation: 6"
+blue "Gemini bootanimation: 7"
 echo "All: press enter"
 echo ""
 
@@ -34,6 +36,14 @@ case $SELECTION in
  purple "Building Systemazer"
  ./gradlew :Systemazer:buildZip --no-configuration-cache
  ;;
+ "6")
+ red "Building bootanimation"
+ ./gradlew :Bootanimation:buildZip --no-configuration-cache
+ ;;
+ "7")
+ blue "Building Gemini bootanimation"
+ ./gradlew :Gemini_bootanimation:buildZip --no-configuration-cache
+ ;;
 *)
  echo "Building everything"
  ./gradlew buildAll --no-configuration-cache
@@ -41,3 +51,4 @@ case $SELECTION in
  ./gradlew clean --no-configuration-cache
  ;;
 esac
+green "Compilation Finished!"
