@@ -31,7 +31,7 @@ else
 	fi
 	if [ -z $(pm list packages | grep -iE "aicore") ]; then
 		echo "Aicore not found, installing in the next reboot"
-		echo "$MODPATH/install.APK.sh aicore.apkm $MODPATH/apks/aicore.apkm" >> $MOPDATH/service.sh
+		echo "$MODPATH/install.APK.sh aicore.apkm $MODPATH/apks/aicore.apkm" >> $MODPATH/service.sh
 	else
 		echo "Aicore found, deleting stub"
 		rm -rf $MODPATH/$AICORE_APK

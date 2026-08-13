@@ -1,4 +1,4 @@
-. $MOPDATH/vars.sh
+. $MODPATH/vars.sh
 
 pm install $MODPATH/apks/dialer.apk
 
