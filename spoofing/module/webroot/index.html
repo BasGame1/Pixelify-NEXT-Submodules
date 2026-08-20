@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PIXELIFY NEXT MONITOR</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-image: url(background.png);
+            max-width: 100%;
+            height: auto;
+            color: white;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            margin-top: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: 'Google Sans', Roboto, sans-serif;
+        }
+
+        .root_container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0.9;
+            background-color: antiquewhite;
+            padding: 40px;
+            margin: 20px;
+            border-radius: 12px;
+            width: 85%;
+            max-width: 500px;
+        }
+
+        .title {
+            text-align: center;
+            background-position: center;
+            background-size: cover;
+            background-image: url(banner.png);
+            height: 100px;
+            width: 90%;
+            margin-bottom: 20px;
+            border-radius: 20px;
+        }
+
+        .tab-bar {
+            display: flex;
+            width: 100%;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            background-color: #e0e0e0;
+            color: #333;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .tab-btn.active {
+            background-color: #4285F4;
+            color: white;
+        }
+
+        .log-console {
+            background-color: black;
+            color: #00ff00;
+            border-radius: 12px;
+            padding: 20px;
+            font-size: 10px;
+            width: 100%;
+            height: 150px;
+            overflow-y: auto;
+            font-family: monospace;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+        }
+
+        .text-console {
+            color: black;
+            font-weight: bold;
+            margin-bottom: 10px;
+            align-self: flex-start;
+        }
+
+        .section-title {
+            color: black;
+            font-weight: bold;
+            margin-top: 24px;
+            margin-bottom: 10px;
+            align-self: flex-start;
+            font-size: 15px;
+        }
+
+        .status-card {
+            margin-top: 10px;
+            background-color: white;
+            color: black;
+            border-radius: 12px;
+            padding: 15px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+            font-weight: 500;
+        }
+
+        .status-detail {
+            font-size: 11px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .status-dot {
+            height: 12px;
+            width: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            background-color: #ccc;
+            flex-shrink: 0;
+        }
+
+        .refresh-btn {
+            margin-top: 20px;
+            padding: 12px 24px;
+            background-color: #4285F4;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .refresh-btn:active {
+            transform: scale(0.98);
+        }
+
+        .status-dot.checking {
+            animation: blink 0.8s infinite;
+            background-color: #FFC107;
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+
+        .config-row {
+            background-color: white;
+            color: black;
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 8px;
+            width: 100%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .config-row .pkg-label {
+            font-weight: 500;
+            font-size: 13px;
+            word-break: break-all;
+        }
+
+        .config-row .row-controls {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .config-row select {
+            flex: 1;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 13px;
+            background: #f5f5f5;
+        }
+
+        .config-row .remove-btn {
+            background-color: #F44336;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .add-row {
+            background-color: white;
+            color: black;
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 8px;
+            width: 100%;
+            box-sizing: border-box;
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .add-row input {
+            flex: 1;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 13px;
+        }
+
+        .add-row .add-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 14px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .preset-row {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+            width: 100%;
+        }
+
+        .preset-chip {
+            background-color: #e0e0e0;
+            color: #333;
+            border: none;
+            border-radius: 16px;
+            padding: 6px 12px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .preset-chip:active {
+            background-color: #4285F4;
+            color: white;
+        }
+
+        .save-btn {
+            margin-top: 12px;
+            padding: 12px 24px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .save-btn:active {
+            transform: scale(0.98);
+        }
+
+        .config-note {
+            color: #555;
+            font-size: 11px;
+            margin-top: 6px;
+            text-align: center;
+        }
+
+        .flag-group-title {
+            color: #333;
+            font-weight: bold;
+            font-size: 13px;
+            margin-top: 10px;
+            margin-bottom: 4px;
+        }
+
+        footer {
+            margin-top: 50px;
+            font-size: 14px;
+            color: black;
+            background-color: white;
+            padding: 10px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="title"></div>
+    <div class="root_container">
+        <div class="tab-bar">
+            <button class="tab-btn active" id="btn-tab-main" onclick="switchTab('main')">Main Monitor</button>
+            <button class="tab-btn" id="btn-tab-flags" onclick="switchTab('flags')">Phenotype Flags</button>
+        </div>
+
+        <div class="text-console">Log Console</div>
+        <div class="log-console" id="log-console">INITIALIZING...</div>
+
+        <!-- SCREEN 1: MAIN MONITOR -->
+        <div id="screen-main" style="width: 100%;">
+            <div class="status-card">
+                <div>
+                    <span>Zygisk Module</span>
+                    <div class="status-detail" id="detail-zygisk"></div>
+                </div>
+                <div id="dot-zygisk" class="status-dot"></div>
+            </div>
+
+            <div class="status-card">
+                <div>
+                    <span>Spoofing Engine</span>
+                    <div class="status-detail" id="detail-spoof"></div>
+                </div>
+                <div id="dot-spoof" class="status-dot"></div>
+            </div>
+
+            <div class="status-card">
+                <div>
+                    <span>Unlimited Storage</span>
+                    <div class="status-detail" id="detail-storage"></div>
+                </div>
+                <div id="dot-storage" class="status-dot"></div>
+            </div>
+
+            <div class="status-card">
+                <div>
+                    <span id="photos-version-text">Photos Version</span>
+                    <div class="status-detail" id="detail-photos"></div>
+                </div>
+                <div id="dot-photos" class="status-dot"></div>
+            </div>
+
+            <div class="status-card">
+                <div>
+                    <span>Zygisk Spoof Status</span>
+                    <div class="status-detail" id="detail-zygisk-status"></div>
+                </div>
+                <div id="dot-zygisk-status" class="status-dot"></div>
+            </div>
+
+            <button class="refresh-btn" onclick="forceRefresh()">Force Stop & Verify</button>
+
+            <div class="section-title">Per-App Model Override</div>
+            <div class="config-note">Custom device model per package. Overrides default rules. Requires restarting target app.</div>
+            
+            <div class="preset-row">
+                <button class="preset-chip" onclick="addPreset('com.google.android.apps.photos', 'pixel_xl')">+ Photos (Pixel XL Unlimited Backup)</button>
+                <button class="preset-chip" onclick="addPreset('com.google.android.aicore', 'pixel_10_pro')">+ AICore (Pixel 10 Pro AI)</button>
+                <button class="preset-chip" onclick="addPreset('com.google.android.gms', 'pixel_8_pro')">+ Framework / GMS (Pixel 8 Pro)</button>
+            </div>
+
+            <div id="config-list" style="width: 100%;"></div>
+            <div class="add-row">
+                <input type="text" id="new-pkg" placeholder="com.example.app">
+                <button class="add-btn" onclick="addConfigEntry()">Add</button>
+            </div>
+            <button class="save-btn" onclick="saveConfig()">Save Config</button>
+        </div>
+
+        <!-- SCREEN 2: PHENOTYPE FLAGS STATUS -->
+        <div id="screen-flags" style="width: 100%; display: none;">
+            <div class="status-card">
+                <div>
+                    <span>Phenotype Microhooks Engine</span>
+                    <div class="status-detail" id="detail-flags-engine">48 flags configured across 4 databases</div>
+                </div>
+                <div id="dot-flags-engine" class="status-dot"></div>
+            </div>
+
+            <div class="status-card">
+                <div>
+                    <span>Call Screen (Atlas / Beesly)</span>
+                    <div class="status-detail" id="detail-callscreen">18 microhook overrides active</div>
+                </div>
+                <div id="dot-callscreen" class="status-dot"></div>
+            </div>
+
+            <div class="status-card">
+                <div>
+                    <span>Hold for Me (Dobby)</span>
+                    <div class="status-detail" id="detail-dobby">11 microhook overrides active</div>
+                </div>
+                <div id="dot-dobby" class="status-dot"></div>
+            </div>
+
+            <div class="status-card">
+                <div>
+                    <span>Call Recording</span>
+                    <div class="status-detail" id="detail-callrec">4 geofence microhook overrides active</div>
+                </div>
+                <div id="dot-callrec" class="status-dot"></div>
+            </div>
+
+            <div class="status-card">
+                <div>
+                    <span>AICore & PSI</span>
+                    <div class="status-detail" id="detail-aicore-flags">System intelligence overrides active</div>
+                </div>
+                <div id="dot-aicore-flags" class="status-dot"></div>
+            </div>
+
+            <button class="refresh-btn" onclick="applyMicrohooks()">Re-Patch Phenotype Microhooks</button>
+        </div>
+    </div>
+
+    <script>
+        const MODULE_ID = "PixelifyNext";
+        const TARGET_PKG = "com.google.android.apps.photos";
+        const CONFIG_FILE = `/data/adb/modules/${MODULE_ID}/spoof_config`;
+
+        const DEVICE_OPTIONS = [
+            {key: "pixel_10_pro", label: "Pixel 10 Pro (AICore / AI Apps)"},
+            {key: "pixel_9_pro", label: "Pixel 9 Pro"},
+            {key: "pixel_8_pro", label: "Pixel 8 Pro (Framework / GMS)"},
+            {key: "pixel_fold", label: "Pixel Fold"},
+            {key: "pixel_7_pro", label: "Pixel 7 Pro"},
+            {key: "pixel_6_pro", label: "Pixel 6 Pro"},
+            {key: "pixel_5", label: "Pixel 5"},
+            {key: "pixel_2", label: "Pixel 2"},
+            {key: "pixel_xl", label: "Pixel XL (Unlimited Backup)"},
+            {key: "none", label: "Skip (No Spoof)"},
+        ];
+
+        let configEntries = [];
+
+        function switchTab(tab) {
+            document.getElementById('screen-main').style.display = (tab === 'main') ? 'block' : 'none';
+            document.getElementById('screen-flags').style.display = (tab === 'flags') ? 'block' : 'none';
+            document.getElementById('btn-tab-main').className = (tab === 'main') ? 'tab-btn active' : 'tab-btn';
+            document.getElementById('btn-tab-flags').className = (tab === 'flags') ? 'tab-btn active' : 'tab-btn';
+            if (tab === 'flags') refreshFlagsStatus();
+        }
+
+        async function execShell(command) {
+            try {
+                if (typeof ksu !== 'undefined' && ksu.exec) {
+                    let result = await ksu.exec(command);
+                    return result ? result.trim() : "";
+                } else if (typeof mmrl !== 'undefined' && mmrl.exec) {
+                    let result = await mmrl.exec(command);
+                    return result ? result.trim() : "";
+                }
+                return "ERROR_NO_API";
+            } catch (e) {
+                return "ERROR_EXEC";
+            }
+        }
+
+        async function forceRefresh() {
+            const consoleDiv = document.getElementById('log-console');
+            consoleDiv.innerText = "Killing Google Photos...\nWaiting for restart...";
+            await execShell(`am force-stop ${TARGET_PKG}`);
+            setTimeout(() => { refreshDashboard(); }, 1500);
+        }
+
+        async function applyMicrohooks() {
+            const consoleDiv = document.getElementById('log-console');
+            consoleDiv.innerText = "Re-patching Phenotype Microhooks...\nPlease wait...";
+            let result = await execShell(`sh /data/adb/modules/${MODULE_ID}/patch_microhooks.sh 2>&1`);
+            consoleDiv.innerText = result || "Microhooks re-patched.";
+            refreshFlagsStatus();
+        }
+
+        async function refreshFlagsStatus() {
+            let statusRaw = await execShell(`cat /data/adb/modules/${MODULE_ID}/flags_status 2>/dev/null`);
+            let isOk = statusRaw && statusRaw.includes("ACTIVE");
+            updateStatus('dot-flags-engine', isOk);
+            updateStatus('dot-callscreen', isOk);
+            updateStatus('dot-dobby', isOk);
+            updateStatus('dot-callrec', isOk);
+            updateStatus('dot-aicore-flags', isOk);
+            
+            let count = isOk ? statusRaw.split("|")[1] || "48" : "0";
+            document.getElementById('detail-flags-engine').innerText = isOk ? `${count} microhook flags active` : "Not patched yet";
+        }
+
+        async function refreshDashboard() {
+            const consoleDiv = document.getElementById('log-console');
+            const storageDot = document.getElementById('dot-storage');
+            let logs = [];
+
+            let testRoot = await execShell("id -u");
+            if (testRoot === "ERROR_NO_API") {
+                consoleDiv.innerText = "Critical Error: API Not Found.";
+                return;
+            }
+            logs.push("[OK] Root API Connected");
+
+            let modCheck = await execShell(`[ -d "/data/adb/modules/${MODULE_ID}" ] && echo "YES" || echo "NO"`);
+            updateStatus('dot-zygisk', modCheck === "YES");
+            if (modCheck === "YES") {
+                document.getElementById('detail-zygisk').innerText = "Module installed";
+            } else {
+                document.getElementById('detail-zygisk').innerText = "Module not found";
+            }
+
+            let statusFile = await execShell(`cat /data/adb/modules/${MODULE_ID}/zygisk_status 2>/dev/null`);
+            if (statusFile && statusFile.length > 0 && statusFile !== "ERROR_EXEC") {
+                let parts = statusFile.split("|");
+                let spoofPkg = parts[0] || "unknown";
+                let spoofModel = parts[1] || "unknown";
+                updateStatus('dot-zygisk-status', true);
+                document.getElementById('detail-zygisk-status').innerText = spoofPkg + " -> " + spoofModel;
+                logs.push("[OK] Last spoof: " + spoofPkg + " as " + spoofModel);
+            } else {
+                updateStatus('dot-zygisk-status', 'warn');
+                document.getElementById('detail-zygisk-status').innerText = "No spoof data yet";
+                logs.push("[!] No Zygisk status file found");
+            }
+
+            let pid = await execShell(`pidof ${TARGET_PKG}`);
+            if (!pid) {
+                updateStatus('dot-spoof', 'warn');
+                document.getElementById('detail-spoof').innerText = "Photos not running";
+                logs.push("[!] Photos closed. Open it to verify.");
+            } else {
+                let logCheck = await execShell(`logcat -d -s PixelifyPhotos:I --pid=${pid} 2>/dev/null | tail -1`);
+                if (logCheck && logCheck.includes("spoof applied")) {
+                    updateStatus('dot-spoof', true);
+                    document.getElementById('detail-spoof').innerText = "Active in PID " + pid;
+                    logs.push("[OK] Photos spoofed in PID: " + pid);
+                } else {
+                    let statusMatch = statusFile && statusFile.includes("com.google.android.apps.photos");
+                    if (statusMatch) {
+                        updateStatus('dot-spoof', true);
+                        document.getElementById('detail-spoof').innerText = "Confirmed via status file";
+                        logs.push("[OK] Spoof confirmed via status file");
+                    } else {
+                        updateStatus('dot-spoof', false);
+                        document.getElementById('detail-spoof').innerText = "Not detected";
+                        logs.push("[ERR] No injection detected");
+                    }
+                }
+            }
+
+            storageDot.classList.add('checking');
+            let storageCheck = await execShell("pm list features | grep com.google.android.feature.PIXEL_2016_EXPERIENCE");
+            let storageOk = storageCheck.includes("2016_EXPERIENCE");
+            updateStatus('dot-storage', storageOk);
+            document.getElementById('detail-storage').innerText = storageOk ? "Pixel 2016 feature present" : "Feature not found";
+            storageDot.classList.remove('checking');
+
+            let resPhotos = await execShell(`dumpsys package ${TARGET_PKG} | grep versionName | head -n 1 | cut -d'=' -f2`);
+            if (resPhotos) {
+                document.getElementById('photos-version-text').innerText = "Photos: " + resPhotos;
+                updateStatus('dot-photos', true);
+                document.getElementById('detail-photos').innerText = "Installed";
+            } else {
+                updateStatus('dot-photos', false);
+                document.getElementById('detail-photos').innerText = "Not installed";
+            }
+
+            consoleDiv.innerText = logs.join("\n");
+        }
+
+        function updateStatus(dotId, state) {
+            const dotElem = document.getElementById(dotId);
+            if (!dotElem) return;
+            if (state === true) dotElem.style.backgroundColor = "#4CAF50";
+            else if (state === 'warn') dotElem.style.backgroundColor = "#FFC107";
+            else dotElem.style.backgroundColor = "#F44336";
+        }
+
+        function buildSelect(selectedKey) {
+            let html = '';
+            for (const opt of DEVICE_OPTIONS) {
+                let sel = (opt.key === selectedKey) ? ' selected' : '';
+                html += `<option value="${opt.key}"${sel}>${opt.label}</option>`;
+            }
+            return html;
+        }
+
+        function renderConfig() {
+            const list = document.getElementById('config-list');
+            let html = '';
+            for (let i = 0; i < configEntries.length; i++) {
+                const entry = configEntries[i];
+                html += `<div class="config-row">
+                    <div class="pkg-label">${entry.pkg}</div>
+                    <div class="row-controls">
+                        <select onchange="configEntries[${i}].device=this.value">${buildSelect(entry.device)}</select>
+                        <button class="remove-btn" onclick="removeEntry(${i})">X</button>
+                    </div>
+                </div>`;
+            }
+            list.innerHTML = html;
+        }
+
+        function addConfigEntry() {
+            const input = document.getElementById('new-pkg');
+            const pkg = input.value.trim();
+            if (!pkg) return;
+            if (configEntries.some(e => e.pkg === pkg)) return;
+            configEntries.push({pkg: pkg, device: "pixel_10_pro"});
+            input.value = '';
+            renderConfig();
+        }
+
+        function addPreset(pkg, deviceKey) {
+            let existing = configEntries.find(e => e.pkg === pkg);
+            if (existing) {
+                existing.device = deviceKey;
+            } else {
+                configEntries.push({pkg: pkg, device: deviceKey});
+            }
+            renderConfig();
+        }
+
+        function removeEntry(index) {
+            configEntries.splice(index, 1);
+            renderConfig();
+        }
+
+        async function loadConfig() {
+            let raw = await execShell(`cat ${CONFIG_FILE} 2>/dev/null`);
+            configEntries = [];
+            if (!raw || raw === "ERROR_EXEC" || raw === "ERROR_NO_API") {
+                configEntries = [
+                    {pkg: "com.google.android.apps.photos", device: "pixel_xl"},
+                    {pkg: "com.google.android.aicore", device: "pixel_10_pro"},
+                    {pkg: "com.google.android.gms", device: "pixel_8_pro"}
+                ];
+                renderConfig();
+                return;
+            }
+            let lines = raw.split("\n");
+            for (const line of lines) {
+                let trimmed = line.trim();
+                if (!trimmed || trimmed.startsWith("#")) continue;
+                let eq = trimmed.indexOf("=");
+                if (eq < 0) continue;
+                let pkg = trimmed.substring(0, eq);
+                let dev = trimmed.substring(eq + 1);
+                if (pkg && dev) {
+                    configEntries.push({pkg: pkg, device: dev});
+                }
+            }
+            if (configEntries.length === 0) {
+                configEntries = [
+                    {pkg: "com.google.android.apps.photos", device: "pixel_xl"},
+                    {pkg: "com.google.android.aicore", device: "pixel_10_pro"},
+                    {pkg: "com.google.android.gms", device: "pixel_8_pro"}
+                ];
+            }
+            renderConfig();
+        }
+
+        async function saveConfig() {
+            let content = "# Per-app device model overrides\n";
+            for (const entry of configEntries) {
+                content += `${entry.pkg}=${entry.device}\n`;
+            }
+            let escaped = content.replace(/'/g, "'\\''");
+            await execShell(`echo '${escaped}' > ${CONFIG_FILE}`);
+
+            const consoleDiv = document.getElementById('log-console');
+            consoleDiv.innerText = "[OK] Config saved (" + configEntries.length + " entries)\nRestart target apps to apply changes.";
+        }
+
+        refreshDashboard();
+        loadConfig();
+    </script>
+
+    <footer>By the PixelifyNEXT project</footer>
+</body>
+
+</html>

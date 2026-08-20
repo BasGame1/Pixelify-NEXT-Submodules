@@ -1,0 +1,71 @@
+plugins {
+    id 'com.android.library'
+}
+
+def modProp = file("$rootDir/spoofing/module/module.prop")
+def versionLine = modProp.readLines().find { it.startsWith('version=') }
+def version = versionLine.split('=')[1]
+def zipName = "PixelifySpoofing-v${version}.zip"
+def gpPath  = "$rootDir/spoofing/module"
+def gpOutPath = "$rootDir/spoofing/out"
+def moduleLibraryName = "pixelify-next-spoofing"
+def buildArm64Path = "$rootDir/spoofing/build/intermediates/stripped_native_libs/release/stripReleaseDebugSymbols/out/lib/arm64-v8a"
+def buildArm32Path = "$rootDir/spoofing/build/intermediates/stripped_native_libs/release/stripReleaseDebugSymbols/out/lib/armeabi-v7a"
+
+android {
+    namespace 'com.pixelify.next.spoofing.zygisk'
+    compileSdk target_sdk
+    defaultConfig {
+        minSdk min_sdk
+        targetSdk target_sdk
+        externalNativeBuild {
+            cmake {
+                arguments "-DMODULE_NAME:STRING=$moduleLibraryName";
+            }
+        }
+        ndk {
+            abiFilters "arm64-v8a", "armeabi-v7a"
+        }
+    }
+    buildFeatures {
+        prefab false
+    }
+    externalNativeBuild {
+        cmake {
+            path "src/main/cpp/CMakeLists.txt"
+        }
+    }
+}
+
+tasks.register('copyArm64Lib', Sync) {
+    from buildArm64Path
+    into "$gpOutPath/module_release/zygisk/arm64-v8a"
+    include "*.so"
+}
+
+tasks.register('copyArm32Lib', Sync) {
+    from buildArm32Path
+    into "$gpOutPath/module_release/zygisk/armeabi-v7a"
+    include "*.so"
+}
+
+tasks.register('copyModule', Sync) {
+    from "$gpPath"
+    into "$gpOutPath/module_release"
+    include "**/*"
+}
+
+tasks.register('cleanBuildDirs', Delete) {
+    delete "$rootDir/spoofing/build"
+    delete "$rootDir/spoofing/.cxx"
+}
+
+tasks.register('buildZip', Zip) {
+    dependsOn 'copyArm64Lib'
+    dependsOn 'copyArm32Lib'
+    dependsOn 'copyModule'
+    dependsOn 'cleanBuildDirs'
+    archiveFileName = zipName
+    from "$gpOutPath/module_release"
+    destinationDirectory = file("$gpOutPath")
+}
