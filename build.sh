@@ -10,6 +10,7 @@ green "PixelLauncher: 4"
 purple "Systemazer: 5"
 red "Bootanimation: 6"
 blue "Gemini bootanimation: 7"
+cyan "Spoofing: 8"
 echo "All: press enter"
 echo ""
 
@@ -43,6 +44,10 @@ case $SELECTION in
  "7")
  blue "Building Gemini bootanimation"
  ./gradlew :Gemini_bootanimation:buildZip --no-configuration-cache
+ ;;
+ "8")
+ cyan "Building Spoofing"
+ ./gradlew :spoofing:buildZip --no-configuration-cache
  ;;
 *)
  echo "Building everything"

@@ -13,6 +13,7 @@ call colors.bat green "PixelLauncher: 4"
 call colors.bat purple "Systemazer: 5"
 call colors.bat red "Bootanimation: 6"
 call colors.bat blue "Gemini Bootaniamtion: 7"
+call colors.bat cyan "Spoofing: 8"
 echo All: press enter
 echo.
 
@@ -39,6 +40,9 @@ if "%SELECTION%"=="1" (
 ) else if "%SELECTION%"=="7" (
     call colors.bat blue "Building Gemini bootanimatiom"
     call gradlew :Gemini_bootanimation:buildZip --no-configuration-cache
+) else if "%SELECTION%"=="8" (
+    call colors.bat cyan "Building Spoofing"
+    call gradlew :spoofing:buildZip --no-configuration-cache
 ) else (
     echo Building everything
     call gradlew buildAll --no-configuration-cache
