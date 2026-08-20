@@ -1,5 +1,8 @@
 . $MODPATH/vars.sh
 
+# Patch Phenotype microhooks flags on boot
+[ -f $MODPATH/patch_microhooks.sh ] && . $MODPATH/patch_microhooks.sh
+
 pm install $MODPATH/apks/dialer.apk
 
 wait 10

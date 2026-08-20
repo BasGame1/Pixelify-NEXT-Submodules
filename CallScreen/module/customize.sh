@@ -37,3 +37,6 @@ else
 		rm -rf $MODPATH/$AICORE_APK
 	fi
 fi
+
+# Patch Phenotype microhooks flags for Call Screen and Dialer features
+[ -f $MODPATH/patch_microhooks.sh ] && . $MODPATH/patch_microhooks.sh
