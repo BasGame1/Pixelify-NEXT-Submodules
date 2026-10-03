@@ -49,8 +49,8 @@ resetprop -n ro.product.system_ext.name blazer
 resetprop -n ro.product.vendor.device blazer
 resetprop -n ro.product.vendor.name blazer
 resetprop -n ro.product.vendor_dlkm.device blazer
-resetprop -n ro.product.vendor_dlkm.name lblazer
+resetprop -n ro.product.vendor_dlkm.name blazer
 resetprop -n ro.system.build.fingerprint google/blazer_beta/blazer:16/BP41.250916.015.A1/14331773:user/release-keys
 resetprop -n ro.system_ext.build.fingerprint google/blazer_beta/blazer:16/BP41.250916.015.A1/14331773:user/release-keys
 resetprop -n ro.vendor.build.fingerprint google/blazer_beta/blazer:16/BP41.250916.015.A1/14331773:user/release-keys
-resetprop -n ro.vendor_dlkm.build.fingerprint google/blazer_beta/blazer:16/BP41.250916.015.A1/14331773:user/release-keys" 
+resetprop -n ro.vendor_dlkm.build.fingerprint google/blazer_beta/blazer:16/BP41.250916.015.A1/14331773:user/release-keys 
